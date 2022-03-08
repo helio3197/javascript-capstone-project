@@ -1,6 +1,8 @@
 const MEALSDB_API = 'https://www.themealdb.com/api/json/v1/1/filter.php?a=Mexican';
 const LIKES_API = 'https://us-central1-involvement-api.cloudfunctions.net/capstoneApi/apps/BnjmjUJJQAhlumcZxnbj/likes/';
 const MEAL_ID_BASE_API = 'https://www.themealdb.com/api/json/v1/1/lookup.php?i=';
+const GET_COMMENTS_ID_BASE_API = 'https://us-central1-involvement-api.cloudfunctions.net/capstoneApi/apps/BnjmjUJJQAhlumcZxnbj/comments?item_id=';
+const POST_COMMENT_API = 'https://us-central1-involvement-api.cloudfunctions.net/capstoneApi/apps/BnjmjUJJQAhlumcZxnbj/comments';
 
 const getLikes = async () => {
   const response = await fetch(LIKES_API);
@@ -29,4 +31,32 @@ const getMealsList = async () => {
   return mealsList;
 };
 
-export { getMealsList, getLikes, sendLike };
+const getMealDetalis = async (id) => {
+  const response = await fetch(`${MEAL_ID_BASE_API}${id}`);
+  const mealDetails = await response.json();
+  return mealDetails.meals[0];
+};
+
+const getComments = async (id) => {
+  const response = await fetch(`${GET_COMMENTS_ID_BASE_API}${id}`);
+  if (!response.ok) return [];
+  const commentsList = await response.json().catch(() => false);
+  if (!commentsList) return [];
+  return commentsList;
+};
+
+const sendComment = (id, username, comment) => fetch(POST_COMMENT_API, {
+  method: 'POST',
+  body: JSON.stringify({
+    item_id: id,
+    username,
+    comment,
+  }),
+  headers: {
+    'Content-type': 'application/json; charset=UTF-8',
+  },
+});
+
+export {
+  getMealsList, getLikes, sendLike, getMealDetalis, getComments, sendComment,
+};
