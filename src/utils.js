@@ -15,8 +15,15 @@ const showMealList = () => {
             <span>${(() => { if (!!likesObj[item.idMeal] === false) return '0 likes'; return `${likesObj[item.idMeal]} likes`; })()}</span>
           </div>
         </div>
-        <button type="button">Comments</button>
+        <button type="button" class="comment-btn" data-bs-toggle="modal" data-bs-target="#recipe-modal">Comments</button>
       </div>`).join('')}`;
+      const commentBtns = document.querySelectorAll('.comment-btn');
+      const openModal = (e) => {
+        const currentCommentBtn = e.target;
+        const { id } = currentCommentBtn.parentNode;
+        const modalHeader = document.querySelector('.modal-header');
+        modalHeader.innerHTML = 'TEXT';
+      };
       const likeBtns = document.querySelectorAll('.like-btn');
       const likeFunc = (e) => {
         const currentLikeBtn = e.target;
@@ -27,7 +34,11 @@ const showMealList = () => {
         sendLike(id);
         currentLikeBtn.removeEventListener('click', likeFunc);
       };
-      likeBtns.forEach((item) => item.addEventListener('click', likeFunc));
+      // likeBtns.forEach((item) => item.addEventListener('click', likeFunc));
+      for (let i = 0; i < likeBtns.length; i += 1) {
+        likeBtns[i].addEventListener('click', likeFunc);
+        commentBtns[i].addEventListener('click', openModal);
+      }
     });
   });
 };
